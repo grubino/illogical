@@ -1,18 +1,18 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.data
 
 sealed abstract class QuToken {
-  def isExistential = 
+  def isExistential: Boolean =
     this == EXISTS
 
-  def isUniversal = 
+  def isUniversal: Boolean =
     this == FORALL
 }
 
 sealed abstract class OpToken {
-  def isCommutative = 
+  def isCommutative: Boolean =
     List(OR, AND, NOR, NAND, XOR) contains this
 
-  def isAssociative = 
+  def isAssociative: Boolean =
     List(OR, AND, NOR, NAND, XOR) contains this
 }
 

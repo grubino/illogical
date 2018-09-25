@@ -1,5 +1,10 @@
 package com.maxadamski.illogical
 
+import com.maxadamski.illogical.utils.Skolemizer.skolemized
+import com.maxadamski.illogical.data.Form
+import com.maxadamski.illogical.io.{LatexFormatter, Parser, TextFormatter}
+import com.maxadamski.illogical.utils.{Resolver, Unifier}
+
 object Main {
 
   def printForm(x: Form): Unit = println(formatter.formatted(x))
@@ -65,7 +70,7 @@ ILLOGICAL v$version - interactive mode
 
     while (true) {
       print("illogical> ")
-      val line = readLine()
+      val line = scala.io.StdIn.readLine()
       val s = line.split(" ", 2)
       val command = s(0)
       (s.head, s.tail.mkString(" ")) match {
@@ -85,7 +90,7 @@ ILLOGICAL v$version - interactive mode
               print("2 simplified: "); printForm(f.simplifying)
               print("3 prenex:     "); printForm(f.pnf)
               print("4 conjuntive: "); printForm(f.simplifying.cnf)
-              print("5 skolemized: "); printForm(Skolemizer.skolemized(f))
+              print("5 skolemized: "); printForm(skolemized(f))
               println()
               println("properties:")
               println(s"- unsat:   ${Resolver.isUnsat(f)}")
@@ -97,7 +102,7 @@ ILLOGICAL v$version - interactive mode
             .foreach(f => printForm(f))
         case ("skolemize", form) => 
           parseForm(form)
-            .foreach(f => printForm(Skolemizer.skolemized(f)))
+            .foreach(f => printForm(skolemized(f)))
         case ("cnf", form) => 
           parseForm(form)
             .foreach(f => printForm(f.cnf))
@@ -110,10 +115,10 @@ ILLOGICAL v$version - interactive mode
         case ("mgu", forms) => 
           val fs = forms.split(";", 2)
             .flatMap(s => parseForm(s.trim))
-          if (fs.size == 2) {
+          if (fs.length == 2) {
             val mgu = Unifier.mgu(fs(0), fs(1))
             mgu match {
-              case Some(set) => println("{"+set.mkString(", ")+"}")
+              case Some(set) => println(s"{${set.mkString(", ")}")
               case _ => println("could not unify")
             }
           } else {

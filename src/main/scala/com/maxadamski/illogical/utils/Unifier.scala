@@ -1,4 +1,6 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.utils
+
+import com.maxadamski.illogical.data._
 
 object Unifier {
   def mgu(p: Form, q: Form): Option[Set[Sub]] = (p, q) match {
@@ -10,11 +12,11 @@ object Unifier {
 
   def mgu(a: Set[Form], b: Set[Form]): Option[Set[Sub]] = {
     var pairs = Set[(Form, Form)]()
-    val res = a.map { a_lit =>
+    val res = a.flatMap { a_lit =>
       b.map { b_lit =>
         mgu(a_lit, b_lit)
       }
-    }.flatten.flatten.flatten
+    }.flatten.flatten
     if (conflict(res)) None else Some(res)
   }
 
@@ -32,7 +34,7 @@ object Unifier {
     while (true) {
       val partial = makeSubs(g)
 
-      if (partial.forall(_ != None)) {
+      if (!partial.contains(None)) {
         val flat = partial.flatten
 
         if (conflict(flat))
@@ -62,7 +64,7 @@ object Unifier {
       }
     }
 
-    return None
+    None
   }
 
   private def conflict(mgu: Set[Sub]) =

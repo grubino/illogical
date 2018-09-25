@@ -1,4 +1,4 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.data
 
 trait LogicLaws {
 

@@ -1,4 +1,6 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.utils
+
+import com.maxadamski.illogical.data._
 
 object Skolemizer {
 
@@ -16,16 +18,16 @@ object Skolemizer {
       .map(_.variable))
     val zipped = es.map(_.variable) zip vs
 
-    var k = 0
-    var s = 0
-    zipped.zipWithIndex.map { case (e, i) => 
+    val genK = Iterator.from(0)
+    val genS = Iterator.from(0)
+    zipped.zipWithIndex.map { case (e, i) =>
       e match {
-        case (v, Nil) => 
-          k += 1
+        case (v, Nil) =>
+          val k = genK.next()
           Sub(v, Con("k" + k))
-        case (v, vs) => 
-          s += 1
-          Sub(v, Func("s" + s, vs))
+        case (v, vs_) =>
+          val s = genS.next()
+          Sub(v, Func("s" + s, vs_))
       }
     }.toSet
   }

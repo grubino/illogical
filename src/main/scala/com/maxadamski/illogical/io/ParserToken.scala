@@ -1,7 +1,9 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.io
+
+import com.maxadamski.illogical.data._
 
 case class ParserToken(symbol: Symbol, value: String) {
-  def matches(regex: String) = value.matches(regex)
+  def matches(regex: String): Boolean = value.matches(regex)
 
   val notMatcher = raw"NOT|\~|\-|\!"
   val andMatcher = raw"AND|\&\&?"
@@ -9,32 +11,32 @@ case class ParserToken(symbol: Symbol, value: String) {
   val existsMatcher = raw"E(X|XIST|XISTS)?"
   val forallMatcher = raw"(F|FOR)?A(LL)?"
 
-  def isSep = symbol == 'sep
-  def isOp  = symbol == 'op
-  def isId  = symbol == 'id
+  def isSep: Boolean = symbol == 'sep
+  def isOp: Boolean = symbol == 'op
+  def isId: Boolean = symbol == 'id
 
-  def isLeftBrace  = isSep && matches(raw"[\(\[\{]")
-  def isRightBrace = isSep && matches(raw"[\)\]\}]")
-  def isArgSep     = isSep && matches(raw"\,")
+  def isLeftBrace: Boolean = isSep && matches(raw"[\(\[\{]")
+  def isRightBrace: Boolean = isSep && matches(raw"[\)\]\}]")
+  def isArgSep: Boolean = isSep && matches(raw"\,")
 
-  def isEXISTS = isOp && matches(existsMatcher)
-  def isFORALL = isOp && matches(forallMatcher)
-  def isNOT    = isOp && matches(notMatcher)
-  def isAND    = isOp && matches(andMatcher)
-  def isOR     = isOp && matches(orMatcher)
-  def isEQV    = isOp && matches(raw"EQV|IFF|\=\=\=|\<\>|\<\-\>")
-  def isIMP    = isOp && matches(raw"IMP|THEN|\-\>|\>")
-  def isNAND   = isOp && matches(s"(N|${notMatcher})(${andMatcher})")
-  def isNOR    = isOp && matches(s"(N|${notMatcher})(${orMatcher})")
-  def isXOR    = isOp && matches(s"X(${orMatcher})")
+  def isEXISTS: Boolean = isOp && matches(existsMatcher)
+  def isFORALL: Boolean = isOp && matches(forallMatcher)
+  def isNOT: Boolean = isOp && matches(notMatcher)
+  def isAND: Boolean = isOp && matches(andMatcher)
+  def isOR: Boolean = isOp && matches(orMatcher)
+  def isEQV: Boolean = isOp && matches(raw"EQV|IFF|\=\=\=|\<\>|\<\-\>")
+  def isIMP: Boolean = isOp && matches(raw"IMP|THEN|\-\>|\>")
+  def isNAND: Boolean = isOp && matches(s"(N|$notMatcher)($andMatcher)")
+  def isNOR: Boolean = isOp && matches(s"(N|$notMatcher)($orMatcher)")
+  def isXOR: Boolean = isOp && matches(s"X($orMatcher)")
 
-  def isCon  = isId && matches(raw"^@[a-z]+[0-9]*'*")
-  val isVar  = isId && matches(raw"^[a-z]+[0-9]*'*")
-  val isFunc = isId && matches(raw"^[a-z]+[0-9]*'*")
-  val isPred = isId && matches(raw"^[a-z]+[0-9]*'*")
+  def isCon: Boolean = isId && matches(raw"^@[a-z]+[0-9]*'*")
+  val isVar: Boolean = isId && matches(raw"^[a-z]+[0-9]*'*")
+  val isFunc: Boolean = isId && matches(raw"^[a-z]+[0-9]*'*")
+  val isPred: Boolean = isId && matches(raw"^[a-z]+[0-9]*'*")
 
-  def isNOTEXISTS: Boolean = isOp && matches(s"(${notMatcher})(${existsMatcher})")
-  def isNOTFORALL: Boolean = isOp && matches(s"(${notMatcher})(${forallMatcher})")
+  def isNOTEXISTS: Boolean = isOp && matches(s"($notMatcher)($existsMatcher)")
+  def isNOTFORALL: Boolean = isOp && matches(s"($notMatcher)($forallMatcher)")
 
   def opToken: Option[OpToken] = 
     if (isAND) Some(AND)

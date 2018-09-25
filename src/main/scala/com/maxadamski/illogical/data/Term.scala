@@ -1,4 +1,6 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.data
+
+import com.maxadamski.illogical.io.TextFormatter
 
 trait Named {
   val name: String
@@ -9,7 +11,7 @@ trait Named {
 trait WithArgs {
   val arguments: List[Term]
 
-  require(!arguments.isEmpty, "Cannot pass empty argument list!")
+  require(arguments.nonEmpty, "Cannot pass empty argument list!")
 }
 
 case class Func(name: String, arguments: List[Term]) extends Term with WithArgs
@@ -40,13 +42,13 @@ sealed abstract class Term extends Node {
   def termForVar(v: Var, subs: Set[Sub]): Option[Term] =
     subs.find(_.v == v).map(_.t)
 
-  def renaming(x: Var, y: Var) =
+  def renaming(x: Var, y: Var): Term =
     substituting(Set(Sub(x, y)))
 
-  def contains(v: Var) = 
+  def contains(v: Var): Boolean =
     vars contains v
 
-  override def toString = 
+  override def toString: String =
     TextFormatter.fmt(this)
 
 }

@@ -1,14 +1,16 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.io
+
+import com.maxadamski.illogical.data._
 
 object Parser {
 
   // Convenience initializers
 
   def makeFunc(name: String, args: List[Term]): Option[Func] = 
-    if (!args.isEmpty) Some(Func(name, args)) else None
+    if (args.nonEmpty) Some(Func(name, args)) else None
 
   def makePred(name: String, args: List[Term]): Option[Pred] = 
-    if (!args.isEmpty) Some(Pred(name, args)) else None
+    if (args.nonEmpty) Some(Pred(name, args)) else None
 
   def makeQu(t: Option[QuToken], v: Option[Var], p: Option[Form]): Option[Qu] =
     for { t <- t; v <- v; p <- p } yield Qu(t, v, p)
@@ -21,7 +23,7 @@ object Parser {
 
   // Node parsers
 
-  def isBalanced(ts: List[ParserToken]) = 
+  def isBalanced(ts: List[ParserToken]): Boolean =
     ts.count(_.isLeftBrace) == ts.count(_.isRightBrace)
 
   def unbraced(ts: List[ParserToken]): Option[List[ParserToken]] = ts match {
@@ -108,7 +110,7 @@ object Parser {
 
   def nestedArgs(ts: List[ParserToken]): (List[ParserToken], List[ParserToken]) = {
     // TODO: clean up this mess...
-    val (name, lbrace, tokens) = (ts(0), ts(1), ts.drop(2))
+    val (name, lbrace, tokens) = (ts.head, ts(1), ts.drop(2))
     var level = -1
     var i = -1
 
@@ -149,7 +151,7 @@ object Parser {
     case _ => List()
   }
 
-  def isOpToken(t: ParserToken) = t.opToken match { case Some(_) => true; case _ => false }
+  def isOpToken(t: ParserToken): Boolean = t.opToken match { case Some(_) => true; case _ => false }
 
 
   def opSplitIndex(ts: List[ParserToken]): Int = {

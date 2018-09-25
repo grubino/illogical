@@ -1,12 +1,15 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.utils
+
+import com.maxadamski.illogical.data.{Form, Not, Pred, Sub}
+import com.maxadamski.illogical.utils.Skolemizer.skolemized
 
 object Resolver {
   def isTrue(form: Form): Boolean = {
-    _isUnsat(Skolemizer.skolemized(Not(form)).clauses)
+    _isUnsat(skolemized(Not(form)).clauses)
   }
 
   def isUnsat(form: Form): Boolean = {
-    _isUnsat(Skolemizer.skolemized(form).clauses)
+    _isUnsat(skolemized(form).clauses)
   }
 
   def setRep[T](s: Set[T]): String = {
@@ -14,7 +17,7 @@ object Resolver {
   }
 
   implicit class PrettySet[T](val set: Set[T]) {
-    override def toString =
+    override def toString: String =
       "{" + set.mkString(", ") + "}"
 
   }
@@ -31,7 +34,7 @@ object Resolver {
   }
 
   case class Clause(lits: Set[Form], comps: List[Set[Form]], mgus: List[Set[Sub]]) {
-    override def toString = {
+    override def toString: String = {
       s"""
       ${setRep(lits)}
       - comp: ${mgusRep(comps)}

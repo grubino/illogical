@@ -1,4 +1,6 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.utils
+
+import com.maxadamski.illogical.data.{Con, Form}
 
 object MTS {
 

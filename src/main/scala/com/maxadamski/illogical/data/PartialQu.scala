@@ -1,14 +1,14 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.data
 
 case class PartialQu(token: QuToken, variable: Var) {
 
   def complete(form: Form): Form = 
     Qu(token, variable, form)
 
-  def isExistential =
+  def isExistential: Boolean =
     token.isExistential
 
-  def isUniversal =
+  def isUniversal: Boolean =
     token.isUniversal
 
 }

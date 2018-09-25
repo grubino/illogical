@@ -1,7 +1,9 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.io
+
+import com.maxadamski.illogical.data._
 
 trait Formatter {
-  def formatted(node: Form) = {
+  def formatted(node: Form): String = {
     fmt(node)
   }
 
@@ -15,7 +17,7 @@ trait Formatter {
     case x: Qu => symbol(x.token) + fmt(x.variable) + "." + brace(x.form)
   }
 
-  def symbol(x: OpToken) = x match {
+  def symbol(x: OpToken): String = x match {
     case OR   => "∨"
     case AND  => "∧"
     case NOR  => "↓"
@@ -25,17 +27,17 @@ trait Formatter {
     case EQV  => "≡"
   }
 
-  def symbol(x: QuToken) = x match {
+  def symbol(x: QuToken): String = x match {
     case FORALL => "∀"
     case EXISTS => "∃"
   }
 
-  def brace(n: Node) = n match {
+  def brace(n: Node): String = n match {
     case x: Op => "(" + fmt(x) + ")"
     case x => fmt(x)
   }
 
-  def args(x: List[Term]) = {
+  def args(x: List[Term]): String = {
     "(" + x.map(fmt).mkString(", ") + ")"
   }
 }
@@ -43,11 +45,11 @@ trait Formatter {
 object TextFormatter extends Formatter
 
 object LatexFormatter extends Formatter {
-  override def formatted(node: Form) = {
+  override def formatted(node: Form): String = {
     "$$" + fmt(node) + "$$"
   }
 
-  override def fmt(n: Node) = n match {
+  override def fmt(n: Node): String = n match {
     case x: Qu => symbol(x.token) + "_{" + fmt(x.variable) + "} " + fmt(x.form)
     case x => super.fmt(x)
   }

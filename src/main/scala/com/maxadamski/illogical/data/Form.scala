@@ -1,4 +1,6 @@
-package com.maxadamski.illogical
+package com.maxadamski.illogical.data
+
+import com.maxadamski.illogical.io.TextFormatter
 
 case class Pred(name: String, arguments: List[Term]) extends Form with WithArgs with Named
 
@@ -8,17 +10,17 @@ case class Qu(token: QuToken, variable: Var, form: Form) extends Form
 
 case class Op(leftForm: Form, token: OpToken, rightForm: Form) extends Form {
 
-  def isAssociative = 
+  def isAssociative: Boolean =
     token.isAssociative
 
-  def isCommutative = 
+  def isCommutative: Boolean =
     token.isCommutative
 
-  def equals(o: Op) =
+  def equals(o: Op): Boolean =
     token == o.token && ((leftForm == o.leftForm && rightForm == o.rightForm) || 
       (leftForm == o.rightForm && rightForm == o.leftForm && token.isCommutative))
 
-  override def equals(o: Any) = o match {
+  override def equals(o: Any): Boolean = o match {
     case o: Op => equals(o)
     case _ => false
   }
